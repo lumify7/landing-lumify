@@ -44,3 +44,8 @@ coverage
 *.sln
 *.sw?
 backup/
+
+.agents/
+.cursor/
+skills-lock.json
+skills.json
