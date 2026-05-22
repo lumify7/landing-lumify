@@ -7,9 +7,36 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
 node_modules
+
+# Lockfiles (project uses pnpm)
+package-lock.json
+yarn.lock
+npm-shrinkwrap.json
+bun.lockb
+
+# Build output
 dist
 dist-ssr
+coverage
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local npm config (do not commit)
+.npmrc
+
+# Local-only files
 *.local
 
 # Editor directories and files
@@ -22,4 +49,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-buckup/
+backup/
+
+# Cursor / OpenCode agents and skills (installed locally, do not commit)
+.agents/
+.cursor/
+skills-lock.json
+skills.json

@@ -13,13 +13,13 @@ El objetivo de este README es que cualquier desarrollador pueda:
 ## Requisitos previos
 
 - **Node.js** ≥ 18 (recomendado usar `nvm`).
-- **npm** (incluido con Node).
+- **pnpm** (recomendado; vía Corepack).
 
 Comprueba tu versión:
 
 ```bash
 node -v
-npm -v
+pnpm -v
 ```
 
 ---
@@ -31,10 +31,68 @@ Clona el repositorio e instala las dependencias:
 ```bash
 git clone <URL_DEL_REPO>
 cd lumify
-npm install
+corepack enable
+pnpm install
 ```
 
-> El proyecto usa un `package-lock.json`, por lo que se recomienda **mantener npm** como gestor por defecto.
+Copia la configuración de entorno de ejemplo y apunta al backend:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Descripción |
+|----------|-------------|
+| `VITE_API_BASE_URL` | Origen del API NestJS **sin** `/api` al final (ej. `http://localhost:3000`). Las peticiones van a `${VITE_API_BASE_URL}/api/...`. |
+
+---
+
+## Docker (opcional)
+
+- Requiere **Docker Desktop** (o Docker Engine) con `docker compose` disponible.
+
+- **Dev server (Vite)**:
+
+```bash
+docker compose up --build
+```
+
+Para levantar en segundo plano:
+
+```bash
+docker compose up -d --build
+```
+
+Abrirá `http://localhost:5173`.
+
+Para parar y limpiar:
+
+```bash
+docker compose down
+```
+
+- **Preview del build**:
+
+```bash
+docker compose --profile preview up --build
+```
+
+Abrirá `http://localhost:4173`.
+
+---
+
+## Backend API (auth y administración)
+
+La app consume el backend Lumify (NestJS): login con email/contraseña, verificación OTP (alta y 2FA), `GET /auth/me`, invitación de usuarios (`POST /admin/users`) y ajuste de 2FA. Rutas principales en el frontend:
+
+- `/login`, `/verify-otp`
+- `/admin` (invitar usuarios), `/admin/settings` (activar/desactivar 2FA en login)
+
+El alta de usuarios de plataforma es por **invitación de un administrador**, no por el formulario público de la sección “Pricing access” de la landing (ese bloque es solo solicitud de información comercial).
+
+Arquitectura HTTP: **`axios`** (`src/api/client.ts`), servicios por dominio en `src/services/`, tipos alineados al API en `src/types/api.ts`, sesión en Pinia (`src/stores/auth.ts`).
+
+En el backend, incluye el origen del frontend en `CORS_ORIGIN` (p. ej. `http://localhost:5173` en desarrollo).
 
 ---
 
@@ -45,7 +103,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto (`lumify`).
 - **Desarrollo**:
 
   ```bash
-  npm run dev
+  pnpm run dev
   ```
 
   Levanta el servidor de desarrollo de Vite (por defecto en `http://localhost:5173`).
@@ -53,7 +111,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto (`lumify`).
 - **Build de producción**:
 
   ```bash
-  npm run build
+  pnpm run build
   ```
 
   Genera la versión optimizada en la carpeta `dist/`.
@@ -61,7 +119,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto (`lumify`).
 - **Previsualización del build**:
 
   ```bash
-  npm run preview
+  pnpm run preview
   ```
 
   Sirve el contenido de `dist/` para revisar el build localmente.
@@ -69,7 +127,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto (`lumify`).
 - **Tests unitarios**:
 
   ```bash
-  npm run test
+  pnpm run test
   ```
 
   Ejecuta la suite de tests con **Jest** + **@vue/test-utils**.
@@ -77,7 +135,7 @@ Todos los comandos se ejecutan desde la raíz del proyecto (`lumify`).
 - **Tests en modo watch**:
 
   ```bash
-  npm run test:watch
+  pnpm run test:watch
   ```
 
 ---
@@ -109,6 +167,7 @@ Resumen de los directorios y archivos principales:
   - `index.ts`: registro e inicialización de Pinia.
   - `locale.ts`: gestión de idioma/locale.
   - `modal.ts`: estado de modales (abierto/cerrado, modal activo, etc.).
+  - `auth.ts`: sesión (JWT), usuario actual (`/auth/me`), login y 2FA.
 - **`src/composables`**:
   - `useI18n.ts`: lógica de internacionalización basada en los datos de `src/data/translations.ts`.
   - `useModals.ts`: helpers para abrir/cerrar modales desde componentes.
@@ -119,7 +178,11 @@ Resumen de los directorios y archivos principales:
   - `translations.ts`: diccionario de textos por idioma (por ahora ES, extensible a más).
   - `modalData.ts`: contenido y configuración de los distintos modales.
 - **`src/router/index.ts`**:
-  Configuración del router de Vue (rutas principales, actualmente centradas en `Home`).
+  Rutas públicas (`/`, `/training`, `/login`, `/verify-otp`) y área **`/admin`** (requiere JWT y rol admin).
+- **`src/api/`**: cliente Axios (`client.ts`), helpers de token (`auth-token.ts`).
+- **`src/services/`**: llamadas HTTP por dominio (`auth.service.ts`, `admin.service.ts`).
+- **`src/types/api.ts`**: tipos de request/response del API.
+- **`src/pages/`**: `Login.vue`, `VerifyOtp.vue`, `admin/AdminLayout.vue`, `AdminHome.vue`, `AdminSettings.vue`.
 - **`src/style.css`**:
   Estilos globales, integración con TailwindCSS 4 (via `@tailwindcss/vite`) y tipografías.
 - **`public/`**:
@@ -133,7 +196,7 @@ Resumen de los directorios y archivos principales:
 1. **Arrancar el servidor de desarrollo**:
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 2. **Editar secciones de la landing**:
@@ -150,7 +213,7 @@ Resumen de los directorios y archivos principales:
 
 5. **Añadir tests**:
    - Crear archivos `.spec.ts` o `.spec.vue` en las carpetas `__tests__` existentes o en nuevas.
-   - Ejecutar `npm run test` o `npm run test:watch` mientras desarrollas.
+    - Ejecutar `pnpm run test` o `pnpm run test:watch` mientras desarrollas.
 
 ---
 
@@ -231,8 +294,8 @@ Algunas líneas de trabajo habituales:
 
 Antes de abrir un PR o hacer un merge importante:
 
-1. Ejecuta `npm run build` para asegurar que el build pasa.
-2. Ejecuta `npm run test` para confirmar que los tests siguen en verde.
+1. Ejecuta `pnpm run build` para asegurar que el build pasa.
+2. Ejecuta `pnpm run test` para confirmar que los tests siguen en verde.
 
 ---
 
