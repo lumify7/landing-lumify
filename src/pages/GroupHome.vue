@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useLocaleStore } from '../stores/locale'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import type { Lang } from '../data/translations'
@@ -132,7 +132,6 @@ const tx = computed(() => {
   return map[locale.value] ?? map.es
 })
 
-const mobileMenuOpen = ref(false)
 </script>
 
 <template>
