@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from '../../composables/useI18n'
-import { useModals } from '../../composables/useModals'
 
 const { t } = useI18n()
-const { openPricingModal } = useModals()
 </script>
 
 <template>
@@ -43,7 +41,7 @@ const { openPricingModal } = useModals()
         <button
           type="button"
           class="inline-flex items-center gap-2.5 border border-white/30 text-white py-4 px-8 rounded-full font-medium text-base transition-all duration-[0.25s] cursor-pointer font-sans hover:border-blue hover:text-blue hover:-translate-y-0.5"
-          @click="openPricingModal()"
+          @click="document.getElementById('registro')?.scrollIntoView({ behavior: 'smooth' })"
         >
           {{ t('hero.cta2') }}
         </button>
