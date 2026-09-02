@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from '../../composables/useI18n'
-import { useModals } from '../../composables/useModals'
 import { useLeadsStore } from '../../stores/leads'
 import { PhMagnifyingGlass, PhFolder, PhGear, PhRocketLaunch } from '@phosphor-icons/vue'
 
 const { t } = useI18n()
-const { openModal } = useModals()
 const leads = useLeadsStore()
 
 const services = [
@@ -23,7 +21,7 @@ function handleServiceInterest(serviceKey: (typeof services)[number]['key']) {
     sourceCardId: serviceKey,
     sourceCta: 'service_card',
   })
-  openModal(serviceKey)
+  document.getElementById('registro')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 

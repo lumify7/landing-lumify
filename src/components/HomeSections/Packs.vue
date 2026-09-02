@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from '../../composables/useI18n'
-import { useModals } from '../../composables/useModals'
 import { useLeadsStore } from '../../stores/leads'
 
 const { t } = useI18n()
-const { openModal } = useModals()
 const leads = useLeadsStore()
 
 const packs = [
@@ -22,7 +20,7 @@ function handlePackInterest(packKey: (typeof packs)[number]['key']) {
     sourceCardId: packKey,
     sourceCta: 'pack_card',
   })
-  openModal(packKey)
+  document.getElementById('registro')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 

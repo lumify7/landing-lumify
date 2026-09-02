@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from '../../composables/useI18n'
-import { useModals } from '../../composables/useModals'
 import { useLeadsStore } from '../../stores/leads'
 
 const { t } = useI18n()
-const { openModal } = useModals()
 const leads = useLeadsStore()
 
 const retainers = [
@@ -21,7 +19,7 @@ function handleRetainerInterest(retainerKey: (typeof retainers)[number]['key']) 
     sourceCardId: retainerKey,
     sourceCta: 'retainer_card',
   })
-  openModal(retainerKey)
+  document.getElementById('registro')?.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 

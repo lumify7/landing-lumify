@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useLocaleStore } from '../stores/locale'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import type { Lang } from '../data/translations'
