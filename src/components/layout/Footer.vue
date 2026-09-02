@@ -27,7 +27,7 @@ function openPricingFromFooter() {
   <footer class="bg-[#060E14] text-white/50 py-[60px] px-[5%] pb-9 flex flex-col gap-10">
     <div class="flex justify-between flex-wrap gap-8">
       <div class="footer-brand">
-        <RouterLink to="/" class="font-heading text-[1.3rem] font-extrabold text-white no-underline">
+        <RouterLink to="/tech" class="font-heading text-[1.3rem] font-extrabold text-white no-underline">
           <span class="text-blue">Lumify</span>
         </RouterLink>
         <p class="mt-3 text-sm max-w-[280px] leading-relaxed">{{ t('foot.desc') }}</p>
@@ -53,15 +53,8 @@ function openPricingFromFooter() {
       <div class="footer-links">
         <h5 class="text-white text-sm font-semibold mb-3.5 tracking-wide">{{ t('foot.s3') }}</h5>
         <ul class="list-none">
-          <li class="mb-2"><a href="/#nosaltres" class="min-h-[44px] flex items-center text-white/45 no-underline text-sm transition-colors hover:text-blue">{{ t('foot.s3l1') }}</a></li>
-          <li class="mb-2">
-            <RouterLink
-              to="/training"
-              class="min-h-[44px] flex items-center text-white/45 no-underline text-sm transition-colors hover:text-blue"
-            >
-              {{ t('foot.training') }}
-            </RouterLink>
-          </li>
+          <li class="mb-2"><a href="/tech#nosaltres" class="min-h-[44px] flex items-center text-white/45 no-underline text-sm transition-colors hover:text-blue">{{ t('foot.s3l1') }}</a></li>
+          <!-- Training: próximamente -->
           <li class="mb-2"><button type="button" class="min-h-[44px] flex items-center w-full bg-transparent border-none py-2.5 pr-0 pl-0 text-left text-white/45 no-underline text-sm transition-colors hover:text-blue cursor-pointer font-inherit" @click="openPricingFromFooter">{{ t('foot.s3l2') }}</button></li>
           <li class="mb-2"><button type="button" class="min-h-[44px] flex items-center w-full bg-transparent border-none py-2.5 pr-0 pl-0 text-left text-white/45 no-underline text-sm transition-colors hover:text-blue cursor-pointer font-inherit">{{ t('foot.s3l3') }}</button></li>
         </ul>
@@ -70,6 +63,9 @@ function openPricingFromFooter() {
     <div class="border-t border-white/10 pt-6 text-xs flex justify-between flex-wrap gap-3">
       <span>{{ t('foot.copy') }}</span>
       <span>Cataluña, España 🇪🇸</span>
+    </div>
+      <div class="mt-4 pt-4 border-t border-white/8 flex justify-center">
+      <a href="/" class="text-white/25 text-xs no-underline hover:text-white/50 transition-colors">← Lumify Group</a>
     </div>
   </footer>
 </template>
