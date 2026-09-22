@@ -3,6 +3,16 @@ import GroupHome    from '../pages/GroupHome.vue'
 import Home        from '../pages/Home.vue'
 import LogisticsHome from '../pages/LogisticsHome.vue'
 import { useAuthStore } from '@/stores/auth'
+import { safeInternalPath } from '@/utils/safe-redirect'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    guestFocused?: boolean
+    requiresAuth?: boolean
+    requiresAdmin?: boolean
+    siteFooter?: boolean
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,18 +22,45 @@ const router = createRouter({
       path: '/',
       name: 'group-home',
       component: GroupHome,
+      meta: { siteFooter: true },
     },
     // ── Lumify Tech ──
     {
       path: '/tech',
       name: 'home',
       component: Home,
+      meta: { siteFooter: true },
     },
     // ── Lumify Logistics ──
     {
       path: '/logistics',
       name: 'logistics',
       component: LogisticsHome,
+      meta: { siteFooter: true },
+    },
+    {
+      path: '/book',
+      name: 'book-meeting',
+      component: () => import('../pages/BookMeeting.vue'),
+      meta: { siteFooter: true },
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../pages/legal/PrivacyPolicy.vue'),
+      meta: { siteFooter: true },
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../pages/legal/TermsOfService.vue'),
+      meta: { siteFooter: true },
+    },
+    {
+      path: '/cookies',
+      name: 'cookies',
+      component: () => import('../pages/legal/CookiePolicy.vue'),
+      meta: { siteFooter: true },
     },
     // ── Auth / Admin ──
     {
@@ -47,6 +84,21 @@ const router = createRouter({
           path: '',
           name: 'admin-home',
           component: () => import('../pages/admin/AdminHome.vue'),
+        },
+        {
+          path: 'pipeline',
+          name: 'admin-pipeline',
+          component: () => import('../pages/admin/AdminPipeline.vue'),
+        },
+        {
+          path: 'opportunities/:id',
+          name: 'admin-opportunity-detail',
+          component: () => import('../pages/admin/AdminOpportunityDetail.vue'),
+        },
+        {
+          path: 'calendar',
+          name: 'admin-calendar',
+          component: () => import('../pages/admin/AdminCalendar.vue'),
         },
         {
           path: 'settings',
@@ -88,10 +140,9 @@ router.beforeEach(async (to) => {
 
   const guestFocused = to.matched.some((r) => r.meta.guestFocused)
   if (guestFocused && auth.isAuthenticated) {
-    const redirect =
-      typeof to.query.redirect === 'string' && to.query.redirect.startsWith('/')
-        ? to.query.redirect
-        : undefined
+    const redirect = safeInternalPath(
+      typeof to.query.redirect === 'string' ? to.query.redirect : undefined,
+    )
     if (redirect) return redirect
     return auth.hasRole('admin') ? '/admin' : '/tech'
   }

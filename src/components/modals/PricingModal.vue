@@ -6,6 +6,8 @@ import { useModals } from '../../composables/useModals'
 import { useI18n } from '../../composables/useI18n'
 import { useFocusTrap } from '../../composables/useFocusTrap'
 import { useLeadsStore, type LeadInterestType } from '../../stores/leads'
+import { pricingAttribution } from '../../data/leadAttribution'
+import PrivacyFormNote from '../legal/PrivacyFormNote.vue'
 
 const { isPricingOpen, closePricingModal } = useModals()
 const { t } = useI18n()
@@ -60,9 +62,9 @@ async function onSubmit() {
       fallbackInterest,
       fallbackContext: {
         sourcePage: isTraining ? 'training' : 'home',
-        sourceSection: isTraining ? 'training_pricing_modal' : 'home_pricing_modal',
-        sourceCardId: 'pricing_modal',
-        sourceCta: 'pricing_modal_submit',
+        sourceSection: pricingAttribution.sourceSection,
+        sourceCardId: pricingAttribution.sourceCardId,
+        sourceCta: pricingAttribution.sourceCta,
       },
     })
     submitted.value = true
@@ -166,6 +168,9 @@ async function onSubmit() {
       <p v-if="!submitted" class="pm-note text-[0.75rem] text-text-muted mt-3">
         {{ t('pm.note') }}
       </p>
+      <div v-if="!submitted" class="mt-2">
+        <PrivacyFormNote tone="light" />
+      </div>
     </div>
   </div>
 </template>

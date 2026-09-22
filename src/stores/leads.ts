@@ -2,6 +2,7 @@ import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import * as leadsService from '@/services/leads.service'
+import { useLocaleStore } from '@/stores/locale'
 import type {
   HttpErrorBody,
   LeadClosedReason,
@@ -17,7 +18,7 @@ export type { LeadInterestType } from '@/types/api'
 
 export interface LeadIntent {
   interestType: LeadInterestType
-  sourcePage: 'home' | 'training'
+  sourcePage: 'home' | 'training' | 'logistics' | 'group'
   sourceSection: string
   sourceCardId: string
   sourceCta: string
@@ -59,7 +60,15 @@ function nowIso() {
 }
 
 function fallbackSourcePageByInterest(interestType: LeadInterestType): LeadIntent['sourcePage'] {
-  return interestType === 'pim_training' ? 'training' : 'home'
+  if (interestType === 'pim_training') return 'training'
+  if (interestType === 'logistics_service') return 'logistics'
+  return 'home'
+}
+
+function defaultSourceSection(sourcePage: LeadIntent['sourcePage']): string {
+  if (sourcePage === 'training') return 'training'
+  if (sourcePage === 'logistics') return 'logistics_contact'
+  return 'register'
 }
 
 function buildFallbackIntent(
@@ -67,7 +76,7 @@ function buildFallbackIntent(
   fallbackContext?: LeadIntentFallback,
 ): Omit<LeadIntent, 'capturedAt'> {
   const sourcePage = fallbackContext?.sourcePage ?? fallbackSourcePageByInterest(fallbackInterest)
-  const sourceSection = fallbackContext?.sourceSection ?? (sourcePage === 'training' ? 'training' : 'register')
+  const sourceSection = fallbackContext?.sourceSection ?? defaultSourceSection(sourcePage)
   return {
     interestType: fallbackInterest,
     sourcePage,
@@ -167,6 +176,7 @@ export const useLeadsStore = defineStore('leads', () => {
     try {
       const intent = resolveIntent(payload.fallbackInterest, payload.fallbackContext)
       const companyTrim = payload.company.trim()
+      const localeStore = useLocaleStore()
       const res = await leadsService.createPublicLead({
         ...(companyTrim ? { company: companyTrim } : {}),
         email: payload.email.trim(),
@@ -175,6 +185,7 @@ export const useLeadsStore = defineStore('leads', () => {
         sourceSection: intent.sourceSection,
         sourceCardId: intent.sourceCardId,
         sourceCta: intent.sourceCta,
+        locale: localeStore.lang,
       })
       return res
     } catch (e) {
